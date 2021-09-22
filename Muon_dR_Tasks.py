@@ -173,7 +173,10 @@ for aiziet in range(notik,tik):
                 continue
             if len(muon_charge) == 6 and abs(sum(muon_charge)) == 6:
                 continue
-                        
+            if (muon_eta[0] == muon_eta[1] and muon_phi[0] == muon_phi[1]):
+                print("I did an upsi with same parameters for muon and anti-muon #Rebel")
+                continue            
+            
             for j in range(len(muon_pdgId)): # Take the genP muon
     
                 muon_dR_min_calc = []
