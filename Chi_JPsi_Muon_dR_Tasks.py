@@ -38,6 +38,8 @@ print("I have the libraries and names")
 notik=0
 tik=len(names["nos"])
 
+error_list = [] # counting errors
+
 for aiziet in range(notik,tik):
     print("\n {0}/{1}, {2}".format(aiziet+1,tik,wall_time(time.time()-bigBang)))
 
@@ -173,9 +175,15 @@ for aiziet in range(notik,tik):
                 continue
             if len(muon_charge) == 6 and abs(sum(muon_charge)) == 6:
                 continue
-            if (muon_eta[0] == muon_eta[1] and muon_phi[0] == muon_phi[1]):
+            if (muon_eta[0] == muon_eta[1] and muon_phi[0] == muon_phi[1] and muon_charge[0] != muon_charge[1]):
                 print("I did an upsi with same parameters for muon and anti-muon #Rebel")
+                error_list.append(i)
                 continue            
+            if (len(muon_charge) == 3 and ((muon_eta[0] == muon_eta[1] and muon_phi[0] == muon_phi[1] and muon_charge[0] != muon_charge[1]) or (muon_eta[0] == muon_eta[2] and muon_phi[0] == muon_phi[2] and muon_charge[0] != muon_charge[2]) or (muon_eta[2] == muon_eta[1] and muon_phi[2] == muon_phi[1] and muon_charge[2] != muon_charge[1]))):
+                print("I did an upsi with same parameters for muon and anti-muon #Rebel")
+                error_list.append(i)
+                continue
+            
             
             for j in range(len(muon_pdgId)): # Take the genP muon
     
@@ -262,6 +270,7 @@ for aiziet in range(notik,tik):
     print("List of matched genP->L1T muons from pairs is this long -> "+str(len(muon_dR_min)))             
     print("List of di-muon dR from J/Psi in matched L1T muons is this long -> "+str(len(di_muon_dR_matched_L1T)))                           
                 
+print("We had {0} strange errors, with same parameters for muon and anti-muon".format(len(error_list)))
 print("{0}\tAll done".format(wall_time(time.time()-bigBang)))
                               
                                
