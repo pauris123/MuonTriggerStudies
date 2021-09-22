@@ -183,6 +183,15 @@ for aiziet in range(notik,tik):
                 print("I did an upsi with same parameters for muon and anti-muon #Rebel")
                 error_list.append(i)
                 continue
+            if (len(muon_charge) == 4 and ((muon_eta[0] == muon_eta[1] and muon_phi[0] == muon_phi[1] and muon_charge[0] != muon_charge[1]) or \
+            (muon_eta[0] == muon_eta[2] and muon_phi[0] == muon_phi[2] and muon_charge[0] != muon_charge[2]) or \
+            (muon_eta[0] == muon_eta[3] and muon_phi[0] == muon_phi[3] and muon_charge[0] != muon_charge[3]) or \
+            (muon_eta[1] == muon_eta[2] and muon_phi[1] == muon_phi[2] and muon_charge[1] != muon_charge[2]) or \
+            (muon_eta[1] == muon_eta[3] and muon_phi[1] == muon_phi[3] and muon_charge[1] != muon_charge[3]) or \
+            (muon_eta[2] == muon_eta[3] and muon_phi[2] == muon_phi[3] and muon_charge[2] != muon_charge[3]))):
+                print("I did an upsi with same parameters for muon and anti-muon #Rebel")
+                error_list.append(i)
+                continue
             
             
             for j in range(len(muon_pdgId)): # Take the genP muon
