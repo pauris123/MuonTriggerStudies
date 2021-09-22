@@ -36,7 +36,7 @@ print("I have the libraries and names")
 
 # File counting stuff
 notik=0
-tik=1 #len(names["nos"])
+tik=len(names["nos"])
 
 for aiziet in range(notik,tik):
     print("\n {0}/{1}, {2}".format(aiziet+1,tik,wall_time(time.time()-bigBang)))
@@ -177,8 +177,12 @@ for aiziet in range(notik,tik):
             for j in range(len(muon_pdgId)): # Take the genP muon
     
                 muon_dR_min_calc = []
+                muon_dR_min_calc_fix = [] # Fixed problem with matched L1T numbers
     
                 for k in range(len(muon_charge)): # Check the the chosen genP muon with all the usable L1T muons
+                    
+                    muon_dR_min_calc_fix.append(((muon_eta[k]-muon_eta_gen[j])**2+(muon_phi[k]-muon_phi_gen[j])**2)**0.5) #Temporary fix
+                    
                     if (muon_charge[k] == -1 and muon_pdgId[j] == 13) or (muon_charge[k] == 1 and muon_pdgId[j] == -13):  
                 
                         muon_dR_min_calc.append(((muon_eta[k]-muon_eta_gen[j])**2+(muon_phi[k]-muon_phi_gen[j])**2)**0.5) #Calculate dR, add it to the list
@@ -188,19 +192,16 @@ for aiziet in range(notik,tik):
         
                 muon_dR_min.append(min(muon_dR_min_calc))  # Take the min value of dR and add it to the list for matched muon dR's
                 muon_dR_min_matched.append(min(muon_dR_min_calc))
-                muon_matched_L1T_number.append(muon_dR_min_calc.index(min(muon_dR_min_calc)))  
+                muon_matched_L1T_number.append(muon_dR_min_calc_fix.index(min(muon_dR_min_calc)))      
                 # Find the index of the L1T muon, that gave the lowest dR value for the particular genP muon, and add it to the extra list.
                 muon_dR_min_iev.append(iev)
                 muon_dR_min_genP_i.append([muon_i_gen[j]])
             
-            for q in range(len(muon_matched_L1T_number)):
-                print("Checking for repeated matching of the same muon, same number below, double matching... Need a fix")
-                print(muon_matched_L1T_number[q])
+            if muon_matched_L1T_number[0] == muon_matched_L1T_number[1]:
+                print("Checking for repeated matching of the same muon, double matching... Need a fix")
                 
-    
-            for n in range(len(muon_matched_L1T_number)): 
-    # Creates new L1T muon parameter lists, based of matching. So first element in these list is matched L1T muon paramaters, that got matched to the 1st muon in genP list. 2nd elemnt here is matched L1T muon for the 2nd genP. Every two lines are a pair. 1st and 2nd is from the 1st Chi matched, 3rd and 4th is from the 2nd Chi matched and so on.
-        
+            for n in range(len(muon_matched_L1T_number)):
+                        
                 muon_matched_L1T_charge.append(muon_charge[muon_matched_L1T_number[n]])    
                 muon_matched_L1T_pt.append(muon_pt[muon_matched_L1T_number[n]])
                 muon_matched_L1T_eta.append(muon_eta[muon_matched_L1T_number[n]])
@@ -210,13 +211,15 @@ for aiziet in range(notik,tik):
                 
                 muon_dR_min_L1T_i.append(muon_i[muon_matched_L1T_number[n]])
                 
-            if len(muon_pdgId) == len(muon_matched_L1T_charge): # Checking whether all genP muons got matched with something
-                print("All gucci with the matching count")
+            if len(muon_pdgId) != len(muon_matched_L1T_charge):
+                print("Something is not gucci with the matching count")
+                
+            if len(muon_pdgId) == len(muon_matched_L1T_charge): # Checking whether all genP muons got matched with something. 
                 
                 if (muon_matched_L1T_charge[0]+muon_matched_L1T_charge[1] != 0):
                     print("Something is wrong with the matched muon charges or the numbering in the list")
                 
-                if len(muon_matched_L1T_charge) == 2:
+                if len(muon_matched_L1T_charge) == 2: # Calculating the dR and invariant masses for L1T muon pairs
                 
                     muon1 = ROOT.TLorentzVector()
                     muon2 = ROOT.TLorentzVector()
@@ -234,17 +237,8 @@ for aiziet in range(notik,tik):
                 else:
                     print("We have more than 2 matched L1T muons, probably 4, need to upgrade the code for dR and inv.M/dR calculation")
     
-    # Here Im writing info to files, but havent started that.
+    # Here Im writing info to files.
             
-    #fo=open("Muon_dR_inFile_decay_muon.txt","a")
-    #for z in range(len(muon_dR)):
-     #   fo.write(str(muon_dR[z])+"\t"+str(aiziet)+"\n")
-    #fo.close()
-    
-    #fom=open("Muon_dR_min_decay_muon.txt","a")
-    #for v in range(len(muon_dR_min)):
-     #   fom.write(str(muon_dR_min[v])+"\t"+str(aiziet)+"\n")
-    #fom.close()
     
     fon=open("Muon_dR_from_JPsi_genP.txt","a")
     for b in range(len(di_muon_dR_genP)):
@@ -258,13 +252,13 @@ for aiziet in range(notik,tik):
     
     fov=open("Di_Muon_dR_invM_invM_o_dR.txt","a")
     for d in range(len(di_muon_dR_matched_L1T)):
-        fob.write(str(di_muon_dR_matched_L1T[d])+"\t"+str(di_muon_inv_mass[d])+"\t"+str(inv_M_o_dR_di_muon[d])+"\t"+str(aiziet)+"\n")
+        fov.write(str(di_muon_dR_matched_L1T[d])+"\t"+str(di_muon_inv_mass[d])+"\t"+str(inv_M_o_dR_di_muon[d])+"\t"+str(aiziet)+"\n")
     fov.close()                
                 
-    #print("List of cross-checked muon dR is this long -> "+str(len(muon_dR)))
-    #print("List of cross-checked muon best min dR is this long -> "+str(len(muon_dR_min)))             
-    #print("GenParticles muons found -> "+str(len(muon_pdgId))+" L1T muons found -> "+str(len(muon_charge)))                           
+    print("List of di-muon dR from J/Psi in genP is this long -> "+str(len(di_muon_dR_genP)))
+    print("List of matched genP->L1T muons from pairs is this long -> "+str(len(muon_dR_min)))             
+    print("List of di-muon dR from J/Psi in matched L1T muons is this long -> "+str(len(di_muon_dR_matched_L1T)))                           
                 
 print("{0}\tAll done".format(wall_time(time.time()-bigBang)))
                               
-                                                         
+                               
