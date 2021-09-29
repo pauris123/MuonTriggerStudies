@@ -223,12 +223,15 @@ for aiziet in range(notik,tik):
                 error_list.append(i)
                 continue
             
+                        
+            muon_matched_L1T_number_matched = []
+            muon_dR_min_genP_i_matched = []
             
             for j in range(len(muon_pdgId)): # Take the genP muon
     
                 muon_dR_min_calc = []
                 muon_dR_min_calc_fix = [] # Fixed problem with matched L1T numbers
-    
+                
                 for k in range(len(muon_charge)): # Check the the chosen genP muon with all the usable L1T muons
                     
                     phi_check_matching = []
@@ -248,13 +251,24 @@ for aiziet in range(notik,tik):
                     else:
                         continue
         
-                muon_dR_min.append(min(muon_dR_min_calc))  # Take the min value of dR and add it to the list for matched muon dR's
-                muon_dR_min_matched.append(min(muon_dR_min_calc))
-                muon_matched_L1T_number.append(muon_dR_min_calc_fix.index(min(muon_dR_min_calc)))      
-                # Find the index of the L1T muon, that gave the lowest dR value for the particular genP muon, and add it to the extra list.
-                muon_dR_min_iev.append(iev)
-                muon_dR_min_genP_i.append([muon_i_gen[j]])
+        
             
+                muon_dR_min_matched.append(min(muon_dR_min_calc))
+                muon_matched_L1T_number_matched.append(muon_dR_min_calc_fix.index(min(muon_dR_min_calc)))      
+                muon_dR_min_genP_i_matched.append([muon_i_gen[j]])
+                # Find the index of the L1T muon, that gave the lowest dR value for the particular genP muon, and add it to the extra list.
+            
+            if (muon_dR_min_matched[0] < 0.4 and muon_dR_min_matched[1] < 0.4) and len(muon_dR_min_matched) == 2: # we apply matching dR cut
+                for y in range(len(muon_dR_min_matched)):
+                
+                    muon_matched_L1T_number.append(muon_matched_L1T_number_matched[y])
+                    muon_dR_min.append(muon_dR_min_matched[y])  # Take the min value of dR and add it to the list for matched muon dR's
+                    muon_dR_min_iev.append(iev)
+                    muon_dR_min_genP_i.append(muon_dR_min_genP_i_matched[y])
+            
+            else:
+                continue
+                        
             if muon_matched_L1T_number[0] == muon_matched_L1T_number[1]:
                 print("Checking for repeated matching of the same muon, double matching... Need a fix")
                 
@@ -305,17 +319,17 @@ for aiziet in range(notik,tik):
     # Here Im writing info to files.
             
     
-    fon=open("Muon_dR_from_JPsi_genP_Chi.txt","a")
-    for b in range(len(di_muon_dR_genP)):
-        fon.write(str(di_muon_dR_genP[b])+"\t"+str(di_muon_invM_genP[b])+"\t"+str(di_muon_invM_o_dR_genP[b])+"\t"+str(di_muon_dR_genP_iev[b])+"\t"+str(di_muon_dR_genP_i[b])+"\t"+str(aiziet)+"\n")
-    fon.close()
+    #fon=open("Muon_dR_from_JPsi_genP_Chi.txt","a")
+    #for b in range(len(di_muon_dR_genP)):
+        #fon.write(str(di_muon_dR_genP[b])+"\t"+str(di_muon_invM_genP[b])+"\t"+str(di_muon_invM_o_dR_genP[b])+"\t"+str(di_muon_dR_genP_iev[b])+"\t"+str(di_muon_dR_genP_i[b])+"\t"+str(aiziet)+"\n")
+    #fon.close()
     
-    fob=open("Muon_dR_from_Matching_genP_L1T_JPsi_Chi.txt","a")
+    fob=open("Muon_dR_from_Matching_genP_L1T_JPsi_Chi_dR_0p4_cut.txt","a")
     for h in range(len(muon_dR_min)):
         fob.write(str(muon_dR_min[h])+"\t"+str(muon_dR_min_iev[h])+"\t"+str(muon_dR_min_genP_i[h])+"\t"+str(muon_dR_min_L1T_i[h])+"\t"+str(aiziet)+"\n")
     fob.close()
     
-    fov=open("Di_Muon_dR_invM_invM_o_dR_JPsi_Chi.txt","a")
+    fov=open("Di_Muon_dR_invM_invM_o_dR_JPsi_Chi_dR_0p4_cut.txt","a")
     for d in range(len(di_muon_dR_matched_L1T)):
         fov.write(str(di_muon_dR_matched_L1T[d])+"\t"+str(di_muon_inv_mass[d])+"\t"+str(inv_M_o_dR_di_muon[d])+"\t"+str(aiziet)+"\n")
     fov.close()                
@@ -328,4 +342,5 @@ print("We had {0} strange errors, with same parameters for muon and anti-muon".f
 print("We had {0} J/PSi's put in 2nd daughter code part, maybe we need to upgrade the code, you lazy boi".format(len(daughter2_list)))
 print("{0}\tAll done".format(wall_time(time.time()-bigBang)))
                               
+                               
                                
