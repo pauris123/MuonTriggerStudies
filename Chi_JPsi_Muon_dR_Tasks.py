@@ -28,20 +28,20 @@ ROOT.FWLiteEnabler.enable()
 # load FWlite python libraries
 from DataFormats.FWLite import Handle, Events
 
-l1Muons, l1MuonLabel = Handle("BXVector<l1t::Muon>"), "gmtStage2Digis:Muon:RECO"
-genParticles, genParticlesLabel = Handle("vector<reco::GenParticle>"), "genParticles"
+l1Muons, l1MuonLabel = Handle("BXVector<l1t::Muon>"), "gmtStage2Digis:Muon:RECO"  # Read in L1T muon data
+genParticles, genParticlesLabel = Handle("vector<reco::GenParticle>"), "genParticles" # Read in genP data
 
-names=pn.read_csv("Step3_FileNames.txt", sep='\t',names=["nos"]) 
+names=pn.read_csv("Step3_FileNames.txt", sep='\t',names=["nos"]) # File name file, so we can loop over all files in the dataset
 print("I have the libraries and names")
 
 # File counting stuff
-notik=0
-tik=len(names["nos"])
+notik=0 # Start file number
+tik=len(names["nos"]) # Finish file number
 
 error_list = [] # counting errors
-daughter2_list = [] # counting J/Psi as daughter 2
+daughter2_list = [] # counting J/Psi as daughter 2 (Ignore)
 
-for aiziet in range(notik,tik):
+for aiziet in range(notik,tik): # Looping over files
     print("\n {0}/{1}, {2}".format(aiziet+1,tik,wall_time(time.time()-bigBang)))
 
     start=time.time()       
@@ -236,7 +236,7 @@ for aiziet in range(notik,tik):
                     
                     phi_check_matching = []
                         
-                    if abs(muon_phi[k]-muon_phi_gen[j]) > 3.1415926:
+                    if abs(muon_phi[k]-muon_phi_gen[j]) > 3.1415926: # Phi safety check
                         phi_check_matching.append((6.2831852-abs(muon_phi[k]-muon_phi_gen[j])))
                     else:
                         phi_check_matching.append((muon_phi[k]-muon_phi_gen[j]))
@@ -258,7 +258,7 @@ for aiziet in range(notik,tik):
                 muon_dR_min_genP_i_matched.append([muon_i_gen[j]])
                 # Find the index of the L1T muon, that gave the lowest dR value for the particular genP muon, and add it to the extra list.
             
-            if (muon_dR_min_matched[0] < 0.4 and muon_dR_min_matched[1] < 0.4) and len(muon_dR_min_matched) == 2: # we apply matching dR cut
+            if (muon_dR_min_matched[0] < 0.3 and muon_dR_min_matched[1] < 0.3) and len(muon_dR_min_matched) == 2: # we apply matching dR cut
                 for y in range(len(muon_dR_min_matched)):
                 
                     muon_matched_L1T_number.append(muon_matched_L1T_number_matched[y])
@@ -272,7 +272,7 @@ for aiziet in range(notik,tik):
             if muon_matched_L1T_number[0] == muon_matched_L1T_number[1]:
                 print("Checking for repeated matching of the same muon, double matching... Need a fix")
                 
-            for n in range(len(muon_matched_L1T_number)):
+            for n in range(len(muon_matched_L1T_number)): # We add matched muon parameters
                         
                 muon_matched_L1T_charge.append(muon_charge[muon_matched_L1T_number[n]])    
                 muon_matched_L1T_pt.append(muon_pt[muon_matched_L1T_number[n]])
@@ -283,7 +283,7 @@ for aiziet in range(notik,tik):
                 
                 muon_dR_min_L1T_i.append(muon_i[muon_matched_L1T_number[n]])
                 
-            if len(muon_pdgId) != len(muon_matched_L1T_charge):
+            if len(muon_pdgId) != len(muon_matched_L1T_charge): # Some safety check
                 print("Something is not gucci with the matching count")
                 
             if len(muon_pdgId) == len(muon_matched_L1T_charge): # Checking whether all genP muons got matched with something. 
@@ -324,12 +324,12 @@ for aiziet in range(notik,tik):
         #fon.write(str(di_muon_dR_genP[b])+"\t"+str(di_muon_invM_genP[b])+"\t"+str(di_muon_invM_o_dR_genP[b])+"\t"+str(di_muon_dR_genP_iev[b])+"\t"+str(di_muon_dR_genP_i[b])+"\t"+str(aiziet)+"\n")
     #fon.close()
     
-    fob=open("Muon_dR_from_Matching_genP_L1T_JPsi_Chi_dR_0p4_cut.txt","a")
+    fob=open("Muon_dR_from_Matching_genP_L1T_JPsi_Chi_dR_0p3_cut.txt","a")
     for h in range(len(muon_dR_min)):
         fob.write(str(muon_dR_min[h])+"\t"+str(muon_dR_min_iev[h])+"\t"+str(muon_dR_min_genP_i[h])+"\t"+str(muon_dR_min_L1T_i[h])+"\t"+str(aiziet)+"\n")
     fob.close()
     
-    fov=open("Di_Muon_dR_invM_invM_o_dR_JPsi_Chi_dR_0p4_cut.txt","a")
+    fov=open("Di_Muon_dR_invM_invM_o_dR_JPsi_Chi_dR_0p3_cut.txt","a")
     for d in range(len(di_muon_dR_matched_L1T)):
         fov.write(str(di_muon_dR_matched_L1T[d])+"\t"+str(di_muon_inv_mass[d])+"\t"+str(inv_M_o_dR_di_muon[d])+"\t"+str(aiziet)+"\n")
     fov.close()                
@@ -341,6 +341,6 @@ for aiziet in range(notik,tik):
 print("We had {0} strange errors, with same parameters for muon and anti-muon".format(len(error_list)))
 print("We had {0} J/PSi's put in 2nd daughter code part, maybe we need to upgrade the code, you lazy boi".format(len(daughter2_list)))
 print("{0}\tAll done".format(wall_time(time.time()-bigBang)))
-                              
+                                  
                                
                                
