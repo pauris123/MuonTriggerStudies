@@ -266,12 +266,12 @@ for aiziet in range(notik,tik):
                         muon1_Phi_genP = ROOT.TLorentzVector()
                         muon2_Phi_genP = ROOT.TLorentzVector()
 
-                        muon1_Phi_genP.SetPtEtaPhiM(muon_pt_for_genP_dR_0[0],
-                                         muon_eta_for_genP_dR_0[0],
-                                         muon_phi_for_genP_dR_0[0],0.10566)
-                        muon2_Phi_genP.SetPtEtaPhiM(muon_pt_for_genP_dR_0[1],
-                                         muon_eta_for_genP_dR_0[1],
-                                         muon_phi_for_genP_dR_0[1],0.10566)
+                        muon1_Phi_genP.SetPtEtaPhiM(muon_pt_for_genP_dR_1[0],
+                                         muon_eta_for_genP_dR_1[0],
+                                         muon_phi_for_genP_dR_1[0],0.10566)
+                        muon2_Phi_genP.SetPtEtaPhiM(muon_pt_for_genP_dR_1[1],
+                                         muon_eta_for_genP_dR_1[1],
+                                         muon_phi_for_genP_dR_1[1],0.10566)
             
                         di_muon_invM_Phi_genP.append((muon1_Phi_genP+muon2_Phi_genP).M())
                         di_muon_invM_o_dR_Phi_genP.append(((muon1_Phi_genP+muon2_Phi_genP).M()/((muon_eta_for_genP_dR_1[0]-muon_eta_for_genP_dR_1[1])**2+(phi_check_Phi_genP[0])**2)**0.5))                
